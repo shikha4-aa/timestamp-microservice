@@ -24,6 +24,35 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
+app.get("/api/:date?", function(req, res){
+  let dateInput = req.params.date;
+
+  if(!dateInput){
+    const now = new Date();
+    return res.json({
+      unix: now.getTime(),
+      utc: now.toUTCString()
+    });
+  }
+
+  let date;
+  if(!isNaN(dateInput)){
+    date = new Date(parseInt(dateInput)); // because dateInput is a string by default in the URL.(e.g. 2015-12-25 is NOT numeric)
+  } else {
+    date = new Date(dateInput);
+  }
+
+  //handle invalid date
+  if(date.toString() === 'Invalid Date'){
+    return res.json({error: "Invalid Date"});
+  }
+
+  res.json({
+    unix: date.getTime(),
+    utc: date.toUTCString()
+  });
+})
+
 
 
 // Listen on port set in environment variable or default to 3000
